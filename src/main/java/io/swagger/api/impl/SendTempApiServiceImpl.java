@@ -13,6 +13,7 @@ import java.io.InputStream;
 
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 
+import javax.ws.rs.client.Client;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.validation.constraints.*;
@@ -21,6 +22,16 @@ import javax.validation.constraints.*;
     public Response sendTempPost(TomaTemperatura body, SecurityContext securityContext) throws NotFoundException {
         System.out.println("SendTemp.java - User : " + body.getIdUser() + " temp: " + body.getTemperatura() + " pulso: " + body.getPulso() + " timestamp " + body.getTimestamp());
         server.getInstance().setUserTemp(body.getIdUser(), body);
-        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "Added the temp with timestamp " + body.getTimestamp() + " to the user " + body.getIdUser().toString())).build();
+
+        String led = "";
+
+        if(body.getTemperatura() < 37){
+            led = "verde";
+        }else if(body.getTemperatura() >= 37 && body.getTemperatura() < 38){
+            led = "amarillo";
+        }else if(body.getTemperatura() >= 38){
+            led = "rojo";
+        }
+        return Response.ok().entity(new ApiResponseMessage(ApiResponseMessage.OK, "Añadida la temperatura con el timestamp " + body.getTimestamp() + " al usuario " + body.getIdUser().toString() + ", el led debería de tener el color  " + led)).build();
     }
 }
