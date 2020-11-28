@@ -22,3 +22,5 @@ Swagger / OpenAPI v3: http://localhost:8080/dgarciakr/ServerApiMonitorizacion/1.
 
 Note that if you have configured the `host` to be something other than localhost, the calls through
 swagger-ui will be directed to that host and not localhost!
+
+Edited
