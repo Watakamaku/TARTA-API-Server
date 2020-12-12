@@ -35,7 +35,7 @@ public class server{
         DataOutputStream dos = null;
         totalAlertas++;
             try {
-                if(temp.getTemperatura() > 37 && temp.getPulso() > 100){
+                if(temp.getTemperatura() < 33 || temp.getTemperatura() > 42 || temp.getPulso() < 40 || temp.getPulso() > 200){
                     alertasErroneas++;
                     conn = new Socket("da2ae0dd.carbon.hostedgraphite.com", 2003);
                     dos = new DataOutputStream(conn.getOutputStream());
