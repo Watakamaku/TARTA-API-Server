@@ -13,10 +13,14 @@ public class server{
     
     private List<pairUserTemp> userTempList;
     private static server instance;
+    private int totalAlertas;
+    private int alertasErroneas;
     
     private server(){
         //Adding some entries to the server
         userTempList = new ArrayList<>(); ;
+        totalAlertas = 0;
+        alertasErroneas = 0;
     }
     
     public static server getInstance(){
@@ -29,19 +33,13 @@ public class server{
     public void setUserTemp(String user, TomaTemperatura temp){
         Socket conn = null;
         DataOutputStream dos = null;
-        
+        totalAlertas++;
             try {
                 if(temp.getTemperatura() > 37 && temp.getPulso() > 100){
+                    alertasErroneas++;
                     conn = new Socket("da2ae0dd.carbon.hostedgraphite.com", 2003);
                     dos = new DataOutputStream(conn.getOutputStream());
-                    dos.writeBytes("a17d2a80-1dc6-4372-8edb-29a65eeec5ba.sla.errorAlerta 1\n");
-                    if(conn != null && !conn.isClosed()){
-                        conn.close();
-                    }
-                }else{
-                    conn = new Socket("da2ae0dd.carbon.hostedgraphite.com", 2003);
-                    dos = new DataOutputStream(conn.getOutputStream());
-                    dos.writeBytes("a17d2a80-1dc6-4372-8edb-29a65eeec5ba.sla.noErrorAlerta 0\n");
+                    dos.writeBytes("a17d2a80-1dc6-4372-8edb-29a65eeec5ba.sla.errorAlerta " + ((alertasErroneas*100)/totalAlertas) + "\n");
                     if(conn != null && !conn.isClosed()){
                         conn.close();
                     }
@@ -50,7 +48,7 @@ public class server{
                 e.printStackTrace();
             }
         
-        System.out.println("SendTemp.java - User de para: " + user + " User de temp : " + temp.getIdUser() + " temp: " + temp.getTemperatura() + " pulso: " + temp.getPulso() + " timestamp " + temp.getTimestamp());
+        System.out.println("Hay un total de " + totalAlertas + " de las que erroes son: " + alertasErroneas);
         boolean found = false;
         for (int i = 0; i <userTempList.size() && !found; i++) {
             if(userTempList.get(i).getUser() == user){
